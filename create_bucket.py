@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+import datetime
 import sys
 import boto3
 s3 = boto3.resource("s3")
-for bucket_name in sys.argv[1:]:
+
+
+def createBucket(bucket_name):
     try:
         response = s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-1'})
-        print (response)
+        print(response)
     except Exception as error:
-        print (error)
+        print(error)

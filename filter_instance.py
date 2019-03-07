@@ -1,3 +1,5 @@
+import time
+
 import boto3
 from subprocess import *
 
@@ -12,13 +14,14 @@ def filter_instance(instance_id):
 
     for instance in running_instances:
         instance.wait_until_running()
-
-    for instance in running_instances:
+        instance.reload()
+        time.sleep(10)
         dns = instance.public_dns_name
+
         try:
-            run("ssh -i keys.pem ec2-user@" + dns + " touch testing.txt", shell=True)
-            run("scp -i keys.pem main.py ec2-user@" + dns + ":/tmp", shell=True)
-            # run("ssh -i keys.pem ec2-user@" + dns + " python3 /tmp/main.py", shell=True)
+            run("ssh -t -o StrictHostKeyChecking=no -i keys.pem ec2-user@" + dns + " sudo yum install python3 -y", shell=True)
+            run("scp -i keys.pem check_webserver.py ec2-user@" + dns + ":.", shell=True)
+            run("ssh -i keys.pem ec2-user@" + dns + " python3 check_webserver.py", shell=True)
 
         except Exception as error:
             print(error)
