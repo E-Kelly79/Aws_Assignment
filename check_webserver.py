@@ -24,17 +24,15 @@ def checkhttpd():
               sudo service httpd start"""
 
             subprocess.run(start, check=True, shell=True)
-            print("Web Server IS running")
+            print("The web server is now running")
 
         except subprocess.CalledProcessError:
-            print("Web Server IS NOT running")
+            print("The web server did not start")
 
 
-# Define a main() function.
 def main():
     checkhttpd()
 
 
-# This is the standard boilerplate that calls the main() function.
 if __name__ == '__main__':
     main()

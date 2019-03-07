@@ -17,7 +17,7 @@ def filter_instance(instance_id):
         instance.reload()
         time.sleep(10)
         dns = instance.public_dns_name
-
+        # install python3 o the running instance and then run the check web server file to see if the server is running
         try:
             run("ssh -t -o StrictHostKeyChecking=no -i keys.pem ec2-user@" + dns + " sudo yum install python3 -y", shell=True)
             run("scp -i keys.pem check_webserver.py ec2-user@" + dns + ":.", shell=True)

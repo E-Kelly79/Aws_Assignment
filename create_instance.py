@@ -13,6 +13,8 @@ def createinstance(bucket_name):
     client = boto3.client('ec2')
     file_exists = os.path.isfile('keys.pem')
 
+    # subprocess.run("aws ec2 create-key-pair --key-name assigment1 --query 'KeyMaterial' --output text | out-file -encoding ascii -filepath my_key.pem", shell=True)
+
     # Create a key-pair for the created instance if the file does not exist
     if not file_exists:
         file = open('keys.pem', 'w')
@@ -20,15 +22,16 @@ def createinstance(bucket_name):
         key_pair = str(key.key_material)
         file.write(key_pair)
 
-    subprocess.run("sudo chmod 400 keys.pem", shell=True)
+    # subprocess.run("sudo chmod 400 keys.pem", shell=True)
 
+    # Run some scripts to install the apache web server on the created instance
     user_script = """#!/bin/bash
         echo "Beginning to install apache" >> /tmp/log.txt
         sudo yum install httpd -y
         sudo systemctl enable httpd
         sudo service httpd start
         sudo yum install python3
-        echo "<h2>Test page</h2> Instance ID: " > /var/www/html/index.html
+        echo "<h2>Test page</h2> Instance ID: " >> /var/www/html/index.html
         curl --silent http://169.254.169.254/latest/meta-data/instance-id/ >> /var/www/html/index.html
         echo "<br>Availability zone:" >> /var/www/html/index.html
         curl --silent http://169.254.169.254/latest/meta-data/placement/availability-zone/ >> /var/www/html/index.html
@@ -40,7 +43,7 @@ def createinstance(bucket_name):
 
 
 
-    # Create an instance under the assigment security group
+    # Create an instance under the assignment security group
     instance = ec2.create_instances(
         ImageId='ami-0bdb1d6c15a40392c',
         MinCount=1,
@@ -63,7 +66,7 @@ def createinstance(bucket_name):
         ],
         UserData=user_script
     )
-    print(instance[0].id)
+    print("An instance has been created wit the id " + instance[0].id)
 
     running_instance = instance[0].id
 
