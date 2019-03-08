@@ -1,9 +1,9 @@
 import datetime
 import time
-
 from create_bucket import createBucket
 from create_instance import createinstance
 from bucket_file import addFileToBucket
+
 
 
 def main():
@@ -22,8 +22,12 @@ def main():
     addFileToBucket(bucket_name)
     createinstance(bucket_name)
 
+
 # Run the main function when this file is called
 if __name__ == '__main__':
     main()
+
+
+
 
 

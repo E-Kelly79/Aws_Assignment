@@ -6,14 +6,9 @@ import os
 from filter_instance import filter_instance
 
 
-
 def createinstance(bucket_name):
-
     ec2 = boto3.resource('ec2')
-    client = boto3.client('ec2')
     file_exists = os.path.isfile('keys.pem')
-
-    # subprocess.run("aws ec2 create-key-pair --key-name assigment1 --query 'KeyMaterial' --output text | out-file -encoding ascii -filepath my_key.pem", shell=True)
 
     # Create a key-pair for the created instance if the file does not exist
     if not file_exists:
@@ -41,8 +36,6 @@ def createinstance(bucket_name):
         echo "<img src=https://s3-eu-west-1.amazonaws.com/%s/embed2.jpg>" >> /var/www/html/index.html
         echo "Apache was installed" >> /tmp/log.txt""" % bucket_name
 
-
-
     # Create an instance under the assignment security group
     instance = ec2.create_instances(
         ImageId='ami-0bdb1d6c15a40392c',
@@ -66,10 +59,10 @@ def createinstance(bucket_name):
         ],
         UserData=user_script
     )
+    print("We are starting your EC2 instance please wait\n")
+    instance[0].wait_until_running()
+    instance[0].reload()
     print("An instance has been created wit the id " + instance[0].id)
-
+    print("Instance has now started\nBeginning to install apache web server")
     running_instance = instance[0].id
-
     filter_instance(running_instance)
-
-
