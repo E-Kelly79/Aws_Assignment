@@ -12,4 +12,6 @@ def update_progress(job_title, progress):
 for i in range(100):
     time.sleep(0.1)
     update_progress("Some job", i/100.0)
+
+
 update_progress("Some job", 1)

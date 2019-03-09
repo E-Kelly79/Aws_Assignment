@@ -21,7 +21,11 @@ def filter_instance(instance_id):
         try:
             run("ssh -t -o StrictHostKeyChecking=no -i keys.pem ec2-user@" + dns + " sudo yum install python3 -y", shell=True)
             run("scp -i keys.pem check_webserver.py ec2-user@" + dns + ":.", shell=True)
+            run("ssh -i keys.pem ec2-user@" + dns + " sudo yum install git -y", shell=True)
+            run("ssh -i keys.pem ec2-user@" + dns + " git clone https://github.com/E-Kelly79/Aws_Assignment.git", shell=True)
             run("ssh -i keys.pem ec2-user@" + dns + " python3 check_webserver.py", shell=True)
+
+
 
         except Exception as error:
             print(error)

@@ -5,6 +5,9 @@ import boto3
 import os
 from filter_instance import filter_instance
 
+def get_user_data(filename = 'user_data.sh'):
+    template = open(filename).read()
+    return template
 
 def createinstance(bucket_name):
     ec2 = boto3.resource('ec2')
@@ -20,21 +23,7 @@ def createinstance(bucket_name):
     # subprocess.run("sudo chmod 400 keys.pem", shell=True)
 
     # Run some scripts to install the apache web server on the created instance
-    user_script = """#!/bin/bash
-        echo "Beginning to install apache" >> /tmp/log.txt
-        sudo yum install httpd -y
-        sudo systemctl enable httpd
-        sudo service httpd start
-        sudo yum install python3
-        echo "<h2>Test page</h2> Instance ID: " >> /var/www/html/index.html
-        curl --silent http://169.254.169.254/latest/meta-data/instance-id/ >> /var/www/html/index.html
-        echo "<br>Availability zone:" >> /var/www/html/index.html
-        curl --silent http://169.254.169.254/latest/meta-data/placement/availability-zone/ >> /var/www/html/index.html
-        echo "<br>IP address: </td>" >> /var/www/html/index.html
-        curl --silent http://169.254.169.254/latest/meta-data/public-ipv4 >> /var/www/html/index.html
-        echo "<hr>Here is an image that I have stored on S3: <br>" >> /var/www/html/index.html
-        echo "<img src=https://s3-eu-west-1.amazonaws.com/%s/embed2.jpg>" >> /var/www/html/index.html
-        echo "Apache was installed" >> /tmp/log.txt""" % bucket_name
+    user_script =  get_user_data() % bucket_name
 
     # Create an instance under the assignment security group
     instance = ec2.create_instances(
